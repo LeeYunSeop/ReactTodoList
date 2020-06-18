@@ -6,13 +6,20 @@ import {
 } from 'react-icons/md';
 import styled from 'styled-components';
 
+const TodoListItemVirtualized = styled.div`
+  ${(props) => props.style}
+  & + & {
+    border-top: 1px solid #dee2e6;
+  }
+  &:nth-child(even) {
+    background: #f8f9fa;
+  }
+`;
+
 const ListItem = styled.div`
   padding: 1rem;
   display: flex;
   align-items: center;
-  &:nth-child(even) {
-    background: #f8f9fa;
-  }
   .checkbox {
     cursor: pointer;
     flex: 1;
@@ -45,25 +52,26 @@ const ListItem = styled.div`
       color: #ff8787;
     }
   }
-
-  & + & {
-    border-top: 1px solid #dee2e6;
-  }
 `;
 
-const TodoListItem = ({ todo, onRemove, onToggle }) => {
+const TodoListItem = ({ todo, onRemove, onToggle, style }) => {
   const { id, text, checked } = todo;
   return (
-    <ListItem>
-      <div className={['checkbox', checked && 'checked'].join(' ')} onClick={() => onToggle(id)}>
-        {checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />}
-        <div className="text">{text}</div>
-      </div>
-      <div className="remove" onClick={() => onRemove(id)}>
-        <MdRemoveCircleOutline />
-      </div>
-    </ListItem>
+    <TodoListItemVirtualized style={style}>
+      <ListItem>
+        <div
+          className={['checkbox', checked && 'checked'].join(' ')}
+          onClick={() => onToggle(id)}
+        >
+          {checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />}
+          <div className="text">{text}</div>
+        </div>
+        <div className="remove" onClick={() => onRemove(id)}>
+          <MdRemoveCircleOutline />
+        </div>
+      </ListItem>
+    </TodoListItemVirtualized>
   );
 };
 
-export default TodoListItem;
+export default React.memo(TodoListItem);
